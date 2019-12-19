@@ -73,8 +73,10 @@ public function import_documents($file , $type = 3){
 3 . 匯入部分，每次匯入必須建立他的Excel檔至專案內，以方便以後的參考。		
 ```
 if($_FILES['files']['error']==0 ){
+
 	$post_data['files'] = $this->allfun->upload_xlsx($_FILES['files']);
 }
+
 $file = './uploads/xlsx/'.$post_data['files'].'.xlsx';
 ```
 獲取完成後，建立資料夾uploads/xlsx/下建立檔案。	
@@ -97,12 +99,40 @@ $file = './uploads/xlsx/'.$post_data['files'].'.xlsx';
         [C] => user001
 )
 ```
-分別'A','B','C'就是Excel相對應的資訊欄位		
+分別`A`,`B`,`C`就是Excel相對應的資訊欄位		
 		
 3 . 新建使用者部分，取得excel文件內容並新增，`$this->yu->import_documents($excel);`利用回傳 excel 直接新建使用者資訊。
 ```
 foreach($excel as $items){
 	$user_id = $this->insert($items);
+}
+
+function insert($items){
+    $data = array();
+    // 取的Excel此列'B'欄位值 可依照客戶需求做新增
+    $data['account'] = $items['B'];	
+    $this->dbh->insert('user_demo',$data);
+    return $this->dbh->insert_id();
+}
+```
+
+4 . 新建推薦圖部分，取得excel文件內容並新增，`$this->yu->rel_insert($excel);`
+```
+public function rel_insert($excel){
+      
+    foreach($excel as $items){
+	
+	//取得個人資訊，獲取 user_id
+        $user_info = $this->get_info($items['B']);
+        $parent_info = $this->get_info($items['C']);
+
+        $data = array();
+        $data['user_id'] = $user_info['user_id'];
+        $data['parent_id'] = $parent_info['user_id'];
+	
+	//新增推薦圖
+        $this->dbh->insert('ref_demo',$data);
+    }
 }
 ```
 
