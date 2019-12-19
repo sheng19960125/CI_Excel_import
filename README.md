@@ -135,4 +135,5 @@ public function rel_insert($excel){
     }
 }
 ```
+5 . 一件返回匯入。
 
