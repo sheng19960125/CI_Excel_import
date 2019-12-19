@@ -77,10 +77,32 @@ if($_FILES['files']['error']==0 ){
 }
 $file = './uploads/xlsx/'.$post_data['files'].'.xlsx';
 ```
-獲取完成後，建立資料夾uploads/xlsx/下建立檔案。		
+獲取完成後，建立資料夾uploads/xlsx/下建立檔案。	
 
+調用後，獲取 Excel 匯入格式如下。		
+```
+[2] => Array(
+        [A] => 1
+        [B] => user001
+        [C] => user000
+)
+[3] => Array(
+        [A] => 2
+        [B] => user002
+        [C] => user001
+)
+[4] => Array(
+    	[A] => 3
+        [B] => user003
+        [C] => user001
+)
+```
+分別'A','B','C'就是Excel相對應的資訊欄位		
+		
 3 . 新建使用者部分，取得excel文件內容並新增，`$this->yu->import_documents($excel);`利用回傳 excel 直接新建使用者資訊。
 ```
-
+foreach($excel as $items){
+	$user_id = $this->insert($items);
+}
 ```
 
